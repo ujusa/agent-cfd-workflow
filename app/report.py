@@ -1,11 +1,3 @@
-"""Deterministic assembly of final_report.md from the artifact contracts
-produced by every earlier stage (plan section 25/30). The LLM-authored
-Review is quoted where relevant; the surrounding structure, numbers, and
-gate statuses come straight from the JSON artifacts, not from the LLM
-re-stating them -- so a reader can trust the numbers even if they're
-skeptical of the prose. Only called after app.audit.run_stage_gate_audit
-has PASSED.
-"""
 from __future__ import annotations
 
 from app import config

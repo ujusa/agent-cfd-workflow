@@ -1,7 +1,3 @@
-"""Structured-output schemas shared by the mock planner (Milestone 3) and
-the real Bedrock-backed planner (Milestone 4) -- same schema, different producer.
-Plan section 23: every LLM output must use a Pydantic schema, never
-free-form prose."""
 from __future__ import annotations
 
 from typing import Literal

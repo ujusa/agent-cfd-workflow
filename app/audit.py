@@ -1,12 +1,3 @@
-"""The final stage-gate audit (plan section 28, Milestone 10): the last
-check before final_report.md is ever written. Everything it checks was
-already supposed to be true by construction (the graph's routing already
-refuses to continue past a FAILED/BLOCKED gate) -- this is defense in
-depth, verifying the artifacts on disk actually say what the in-memory
-state claims, not re-deriving pass/fail from scratch. A manually deleted or
-corrupted artifact must block the report, not produce one built on missing
-evidence.
-"""
 from __future__ import annotations
 
 from pathlib import Path

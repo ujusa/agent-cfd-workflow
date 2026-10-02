@@ -1,9 +1,3 @@
-"""Deterministic plot generation (plan section 20). The LLM never sees raw
-field data to draw conclusions from a plot it imagined -- these are
-rendered directly from qoi_results, headlessly (matplotlib's Agg backend,
-no display needed), matching plan section 16's "no ParaView GUI on the
-critical path."
-"""
 from __future__ import annotations
 
 import matplotlib

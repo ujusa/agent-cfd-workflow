@@ -1,10 +1,4 @@
-"""prepare_case: the only place a case directory gets created.
 
-Copies the immutable benchmark template into
-runs/<run_id>/cases/<case_id>/case/ and applies only explicitly permitted,
-schema- and range-validated parameter overrides. No LLM, no shell, no
-arbitrary writes -- see AGENTS.md section 2.
-"""
 from __future__ import annotations
 
 import json
@@ -22,10 +16,6 @@ from app.schemas import DiagnosticFix
 
 
 class CaseParameters(BaseModel):
-    """The complete allowlist of parameters a caller (human or, from
-    Milestone 4 on, the planner LLM) may set. Any other key is rejected by
-    `extra="forbid"` -- this is the schema-validation half of plan section 8;
-    `resolve_case_root` is the path-validation half."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -87,14 +77,7 @@ def _apply_mesh_level(case_dir: Path, mesh_level: str) -> None:
 def prepare_case(
     run_id: str, case_id: str, parameters: dict[str, Any] | CaseParameters | None = None
 ) -> Path:
-    """Create runs/<run_id>/cases/<case_id>/ from the benchmark template.
-
-    Returns the case_root (runs/<run_id>/cases/<case_id>), not the OpenFOAM
-    case dir itself -- use app.paths.require_prepared_case for that.
-
-    Raises on: invalid run_id/case_id, unknown/out-of-range parameters, or a
-    case_root that already exists (cases are never silently overwritten).
-    """
+   
     params = (
         parameters
         if isinstance(parameters, CaseParameters)
@@ -131,9 +114,6 @@ def prepare_case(
 
 
 def _apply_relaxation_factor(case_dir: Path, factor: float) -> None:
-    """Sets relaxationFactors.equations.U and .".*"" (the SIMPLEC-consistent
-    single relaxation factor the template uses) in system/fvSolution. Only
-    touches the numeric value -- not the trailing comment."""
     f = case_dir / "system" / "fvSolution"
     text = f.read_text()
     value = f"{factor:.3g}"
@@ -178,14 +158,6 @@ _FIX_APPLIERS = {
 
 
 def apply_diagnostic_fix(case_root: Path, fix: DiagnosticFix) -> None:
-    """Rewrites exactly one numerical knob (system/fvSolution relaxation
-    factor or nNonOrthogonalCorrectors, or system/controlDict endTime) on an
-    already-prepared case. Never touches geometry, boundary conditions,
-    physical model, material properties, or validation thresholds -- those
-    files are never opened here. Callers must run app.policy.
-    check_diagnostic_fix on `fix` first; this function does not re-check
-    policy, only path safety (AGENTS.md section 2/5).
-    """
     case_dir = require_prepared_case(case_root)
     applier = _FIX_APPLIERS[fix.action_type]
     applier(case_dir, fix.value)

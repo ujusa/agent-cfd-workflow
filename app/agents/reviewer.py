@@ -1,9 +1,3 @@
-"""mock_review_results (fast stand-in for tests) and bedrock_review_results
-(the real review agent, Milestone 9). Both consume the same evidence
-bundle -- built strictly from already-written run artifacts, never a raw
-log or field file (plan section 18/22) -- and produce the same Review
-schema.
-"""
 from __future__ import annotations
 
 import json
@@ -13,8 +7,7 @@ from app.artifacts import read_run_artifact
 from app.llm import LLMService, load_prompt_template
 from app.schemas import Review, ReviewFinding
 
-# Every artifact the review agent is allowed to see. Order matters only for
-# readability of the rendered bundle.
+
 EVIDENCE_ARTIFACTS = [
     "study.json",
     "plan.json",
@@ -33,7 +26,7 @@ def build_evidence_bundle(run_id: str) -> dict:
         try:
             bundle[name] = read_run_artifact(run_id, name)
         except FileNotFoundError:
-            bundle[name] = None  # explicitly absent -- not run or not reached
+            bundle[name] = None  
     return bundle
 
 

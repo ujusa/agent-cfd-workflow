@@ -1,19 +1,3 @@
-"""Shared single-case execution pipeline: prepare -> mesh -> check_mesh ->
-solve -> postprocess -> extract_qoi, applying the same deterministic gates
-used throughout (Gates A, B, C, D). Used by app.graph's node_mesh_refinement
-and node_run_parameter_cases to run additional cases beyond the baseline
-without duplicating tool-calling logic.
-
-The baseline case still runs through its own dedicated graph nodes
-(app/graph.py's node_prepare_baseline etc.), which additionally wire in the
-Milestone 6 bounded-retry loop. Cases run through this helper do NOT retry
-on solver failure -- a failed case is reported (via `success=False` and
-whichever of mesh_quality/solver_health/conservation got populated) and the
-caller moves on to the next case. This is deliberate case isolation (plan
-section 46, item 5): one bad case in a mesh-refinement or parameter-sweep
-batch must not block the others. Extending bounded retry to batch cases is
-a reasonable future improvement, not required by Milestones 7-8.
-"""
 from __future__ import annotations
 
 from pathlib import Path

@@ -583,9 +583,6 @@ def node_cross_case_analysis(state: AgentState) -> dict:
     write_run_artifact(run_id, "sweep_results.json", {"cases": rows})
     plot_path = write_qoi_vs_velocity_plot(run_id, rows)
 
-    # Finalize case_manifest.json with every case actually run (baseline +
-    # mesh refinement + sweep) -- node_prepare_baseline's earlier write only
-    # had the baseline, since mesh refinement/sweep cases didn't exist yet.
     artifacts = state.get("artifacts") or {}
     full_manifest = [
         {**spec, "case_root": artifacts.get(spec["case_id"], {}).get("case_root")}
@@ -669,9 +666,6 @@ def node_final_report(state: AgentState) -> dict:
     }
 
 
-# ---------------------------------------------------------------------
-# Conditional routing (pure functions of state -- the graph never guesses)
-# ---------------------------------------------------------------------
 
 def _gate_status(state: AgentState, key: str) -> GateStatus:
     return state["validation_results"][key]["status"]
@@ -713,10 +707,6 @@ def route_after_diagnose_solver(state: AgentState) -> str:
 def route_after_mesh_independence(state: AgentState) -> str:
     return "run_parameter_cases" if state["agent_decisions"][-1]["policy_check"] == "PASSED" else END
 
-
-# ---------------------------------------------------------------------
-# Graph assembly
-# ---------------------------------------------------------------------
 
 def build_graph(checkpointer) -> CompiledStateGraph:
     g = StateGraph(AgentState)

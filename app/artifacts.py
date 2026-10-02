@@ -1,10 +1,4 @@
-"""Run-level artifact contracts (plan section 25): one predictable JSON file
-per stage, written under runs/<run_id>/ (as opposed to the per-case files
-under runs/<run_id>/cases/<case_id>/ written by app.tools.case_tools and
-app.validation.qoi). The next stage is expected to validate the previous
-artifact before reading it -- enforced today by Pydantic models at the
-point each artifact is produced.
-"""
+
 from __future__ import annotations
 
 import json

@@ -1,11 +1,3 @@
-"""mock_diagnose_solver_failure: a deterministic stand-in, same triage logic
-as skills/convergence-check.md, used for fast hermetic tests and as a
-fallback. bedrock_diagnose_solver_failure: the real diagnostic agent,
-backed by AWS Bedrock via app.llm.LLMService. Both produce exactly the same
-DiagnosticFix schema -- see AGENTS.md section 7 for the allowlist this
-schema enforces, and app.policy.check_diagnostic_fix for the independent
-policy check every proposal still goes through before it's ever applied.
-"""
 from __future__ import annotations
 
 import json

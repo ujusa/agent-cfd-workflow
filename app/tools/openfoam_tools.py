@@ -1,14 +1,3 @@
-"""The only place that invokes docker/OpenFOAM. Exposes narrow, allowlisted
-operations -- never a generic command string -- per AGENTS.md section 2.
-
-run_mesh / check_mesh / run_solver execute, persist stdout+stderr+return
-code to a log file, and enforce a timeout. They never raise on a normal
-solver/mesh failure or timeout -- they return a structured OperationResult
-so a later LangGraph gate node can route PASSED/FAILED/BLOCKED (plan section
-26) instead of an exception unwinding the workflow. They only raise for
-programmer/policy errors: an unknown operation, or a case_root that was
-never prepared or has escaped RUNS_DIR.
-"""
 from __future__ import annotations
 
 import json
@@ -25,11 +14,6 @@ from app.paths import require_prepared_case
 
 Operation = Literal["mesh", "check_mesh", "solve", "postprocess"]
 
-# Fixed, non-parametrized set of OpenFOAM function objects used to extract
-# QoIs (app/validation/qoi.py). Patch/field names are hardcoded to match the
-# benchmark case -- never built from caller input. Verified interactively
-# against OpenFOAM 11 (see Milestone 2 notes): all six are valid function
-# object names that write postProcessing/<name>/<time>/*.dat.
 POSTPROCESS_FUNCTIONS: list[str] = [
     "patchFlowRate(patch=inlet)",
     "patchFlowRate(patch=outlet)",
@@ -42,7 +26,6 @@ _POSTPROCESS_COMMAND = " && ".join(
     f'postProcess -func "{fn}" -latestTime' for fn in POSTPROCESS_FUNCTIONS
 )
 
-# operation -> (foam command, log filename, default timeout seconds)
 _ALLOWED_OPERATIONS: dict[Operation, tuple[str, str, int]] = {
     "mesh": ("blockMesh", "blockMesh.log", config.MESH_TIMEOUT_SECONDS),
     "check_mesh": ("checkMesh", "checkMesh.log", config.CHECK_MESH_TIMEOUT_SECONDS),
@@ -76,10 +59,6 @@ def _docker_command(case_dir: Path, foam_command: str) -> list[str]:
     return [
         "docker", "run", "--rm",
         "--platform", config.OPENFOAM_PLATFORM,
-        # Without this, the container's baked-in user (uid 98765) can't
-        # write to the host-mounted case dir on real Linux Docker -- macOS
-        # Docker Desktop's bind-mount layer maps this permissively, which
-        # is why it was never caught there (found deploying to EC2).
         "--user", f"{os.getuid()}:{os.getgid()}",
         "-v", f"{case_dir}:{config.OPENFOAM_CONTAINER_WORKDIR}",
         "-w", config.OPENFOAM_CONTAINER_WORKDIR,

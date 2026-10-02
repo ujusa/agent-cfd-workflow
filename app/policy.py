@@ -1,7 +1,3 @@
-"""The CFD policy checker (plan section 3 item 3): verifies a StudyPlan
-against allowed choices before anything is executed or a human is asked to
-approve it. Pure, deterministic, independent of who/what produced the plan.
-"""
 from __future__ import annotations
 
 from pydantic import BaseModel, ValidationError
@@ -34,13 +30,6 @@ def check_plan_policy(plan: StudyPlan) -> PolicyCheckResult:
         except ValidationError as exc:
             reasons.append(f"case {case.case_id!r} failed parameter validation: {exc}")
 
-    # Real finding (Milestone 9/10): the planner will sometimes enumerate
-    # the mesh-refinement cases itself (e.g. case_id="baseline_coarse") on
-    # top of the baseline, not realizing app.graph.node_mesh_refinement
-    # already runs every level in mesh_levels automatically with exactly
-    # that naming convention. Left unchecked, node_run_parameter_cases then
-    # tries to re-prepare the same case_id and crashes with FileExistsError
-    # mid-run. Reject it here instead, before anything executes.
     if plan.cases:
         if plan.cases[0].case_id != "baseline":
             reasons.append(
@@ -66,11 +55,6 @@ def check_plan_policy(plan: StudyPlan) -> PolicyCheckResult:
             "study plan must require human approval before execution (AGENTS.md section 8)"
         )
 
-    # Mesh independence is a required part of v1's scope (plan section 3,
-    # item 10), not something the planner gets to opt out of. Reject here,
-    # before anything runs, rather than discovering at mesh_independence_gate
-    # -- after already spending a baseline run -- that the plan never had
-    # enough mesh levels to assess it (app/graph.py:node_mesh_independence_gate).
     required_levels = {"medium", "fine"}
     if not required_levels.issubset(set(plan.mesh_levels)):
         reasons.append(

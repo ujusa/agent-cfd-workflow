@@ -1,0 +1,18 @@
+[Unit]
+Description=Agentic CFD Streamlit UI
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/agentic-cfd
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=AWS_REGION=ap-south-1
+ExecStart=/home/ubuntu/.local/bin/uv run streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

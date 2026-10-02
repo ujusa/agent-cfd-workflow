@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
-"""Streamlit UI for the agentic CFD workflow.
 
-    uv run streamlit run streamlit_app.py
-
-Start a new study, approve the proposed plan when it pauses at the human
-approval gate (the agent cannot bypass this -- AGENTS.md section 8), and
-watch/browse real Docker + AWS Bedrock runs: validation gates, QoI results,
-mesh independence, the velocity-sweep plot, the review, and the final
-report. All execution happens on a background thread (app/ui_runner.py) so
-the UI never blocks on a multi-minute CFD run; it observes progress by
-re-reading the SQLite checkpoint, which is written after every graph node.
-"""
 from __future__ import annotations
 
 import json
@@ -46,9 +35,7 @@ def _dataframe(rows: list[dict]) -> None:
         st.caption("None yet.")
 
 
-# ---------------------------------------------------------------------
-# Sidebar: environment, new run, run list
-# ---------------------------------------------------------------------
+
 with st.sidebar:
     st.title("Agentic CFD Scientist")
     st.caption("Local OpenFOAM + LangGraph + AWS Bedrock")
@@ -88,9 +75,6 @@ with st.sidebar:
             st.session_state.selected_run_id = run["run_id"]
             st.rerun()
 
-# ---------------------------------------------------------------------
-# Main area
-# ---------------------------------------------------------------------
 run_id = st.session_state.selected_run_id
 if not run_id:
     st.info("Start a new study or select a run from the sidebar.")

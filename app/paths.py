@@ -1,10 +1,3 @@
-"""Filesystem-boundary enforcement shared by every CFD tool.
-
-Every function here re-validates from scratch -- callers must never assume a
-path was already checked upstream. This is the defense described in
-AGENTS.md section 3 and plan section 8: case IDs must map to approved run
-directories, and no tool may read or write outside runs/<run_id>/.
-"""
 from __future__ import annotations
 
 import re

@@ -1,8 +1,3 @@
-"""mock_plan_study (Milestone 3): a fixed, deterministic stand-in.
-bedrock_plan_study (Milestone 4): the real planner, backed by AWS Bedrock
-via app.llm.LLMService (model configured by BEDROCK_MODEL_ID). Both produce exactly the same StudyPlan
-schema, so a graph node that calls one can call the other unchanged.
-"""
 from __future__ import annotations
 
 from app import config

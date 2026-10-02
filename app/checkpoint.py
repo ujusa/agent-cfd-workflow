@@ -1,16 +1,3 @@
-"""SQLite checkpointing (plan section 15). thread_id == run_id everywhere
-this is used, so a paused workflow resumes from exactly its last checkpoint.
-
-A fresh sqlite3.Connection is deliberately created on every call (see
-app/ui_runner.py's docstring -- it's what makes cross-thread/cross-process
-reads and writes safe without sharing a single Connection object). The
-Streamlit UI calls this far more often than the CLI ever did, though --
-every status poll opens one -- so two things matter that didn't before: a
-busy_timeout so concurrent access waits instead of raising "database is
-locked", and skipping SqliteSaver.setup()'s CREATE TABLE/PRAGMA script on
-every call (it's only needed once per db file per process; running it
-repeatedly was itself a source of lock contention under concurrent access).
-"""
 from __future__ import annotations
 
 import sqlite3

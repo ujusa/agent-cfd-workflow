@@ -1,13 +1,3 @@
-"""The LLM lives behind one interface (plan section 14) so a provider swap
-never requires rewriting a graph node -- this already happened once in this
-project (Gemini -> AWS Bedrock). AWS credentials come from the ambient AWS
-credential chain; nothing here reads or writes a secret.
-
-The LLM is only ever used for: planning, bounded diagnosis, result review,
-report drafting. It never executes a command, calculates a validation
-metric, chooses a tolerance, writes outside runs/<run_id>/, or overrides a
-failed gate (AGENTS.md section 5).
-"""
 from __future__ import annotations
 
 from pathlib import Path

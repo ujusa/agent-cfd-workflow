@@ -1,21 +1,13 @@
 # agentic-cfd-local
 
 A small, local only agentic CFD demo: OpenFOAM (Docker) + LangGraph +
-SQLite checkpointing + AWS Bedrock for planning/review. See
-`agentic_cfd_local_demo_plan.md` for the full design and `AGENTS.md` for
-the safety/architecture rules every agent in this repo must follow.
+SQLite checkpointing + AWS Bedrock for planning/review.  
 
 
-## Verify the environment
 
-```bash
-uv run python scripts/smoke_test.py
-```
+Go to : http://13.232.209.73/ to have a look 
 
-This checks, with real commands: the SQLite checkpoint database is
-writable, the OpenFOAM image is present, and `blockMesh` / `checkMesh` /
-the solver (`foamRun`) all run successfully on a scratch copy of the
-benchmark case.
+
 
 
 ## Repository layout
